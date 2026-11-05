@@ -1,49 +1,24 @@
-Smart Travel Planner 🌍
+# Smart Travel Planner 🌍
 
-AI-powered Global Travel Planning Platform**
+An AI-powered travel planning platform that helps users create personalized travel itineraries.
 
-📌 About the Project
+## Features
 
-Smart Travel Planner is an AI-powered travel planning platform that helps users organize personalized trips based on their destination, budget, travel duration, and preferences.
+- AI-powered travel recommendations
+- Personalized travel itineraries
+- Destination information
+- Budget planning
 
-The platform generates travel itineraries, recommends activities, and estimates travel expenses.
+## Technologies
 
-🎯 Project Goals
+- Python
+- AI / Machine Learning
+- GitHub
 
-- Simplify travel planning.
-- Generate personalized travel itineraries using AI.
-- Help users manage travel budgets.
-- Recommend destinations, hotels, and activities.
-- Build a scalable global travel platform.
+## Project Status
 
- ✨ Main Features
+Currently under development.
 
-- Destination Search
-- AI Travel Itinerary Generator
-- Travel Budget Calculator
-- Hotel Recommendations
-- Activities and Experiences
-- User Accounts and Saved Trips
+## Goal
 
- 🛠️ Technology Stack
-
-Technology:Python,FastAPI,React,TypeScript,Tailwind CSS,PostgreSQL,OpenAI API,Git & GitHub      
-
-Purpose:Backend development,REST API,Frontend,Frontend programming,UI styling,Database,AI integration,Version control 
-
- 🗺️ Development Roadmap
-
-1. Project Foundation
-2. Backend Development
-3. Frontend Development
-4. AI Integration
-5. Database and Authentication
-6. Testing and Deployment
-
-🚀 Project Status
-
-Currently in the planning and initial development phase.
-
-📄 License
-
-This project is licensed under the MIT License.
+To build an intelligent travel assistant that makes trip planning easier, faster, and smarter.
