@@ -27,15 +27,9 @@ The platform generates travel itineraries, recommends activities, and estimates 
 
  🛠️ Technology Stack
 
-Technology Purpose 
-| Python | Backend development |
-| FastAPI | REST API |
-| React | Frontend |
-| TypeScript | Frontend programming |
-| Tailwind CSS | UI styling |
-| PostgreSQL | Database |
-| OpenAI API | AI integration |
-| Git & GitHub | Version control |
+Technology:Python,FastAPI,React,TypeScript,Tailwind CSS,PostgreSQL,OpenAI API,Git & GitHub      
+
+Purpose:Backend development,REST API,Frontend,Frontend programming,UI styling,Database,AI integration,Version control 
 
  🗺️ Development Roadmap
 
