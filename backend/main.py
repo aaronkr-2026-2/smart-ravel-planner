@@ -1,8 +1,12 @@
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from datetime import date, timedelta
+from pathlib import Path
+import sqlite3
 
 app = FastAPI(
     title="Smart Travel Planner",
@@ -10,7 +14,19 @@ app = FastAPI(
     version="1.1.0"
 )
 
-# Frontend bilan bog'lanishga ruxsat
+# Project folders
+BASE_DIR = Path(__file__).resolve().parent.parent
+FRONTEND_DIR = BASE_DIR / "fronted"
+DATABASE_PATH = Path(__file__).with_name("travel.db")
+
+# Frontend static files
+app.mount(
+    "/static",
+    StaticFiles(directory=str(FRONTEND_DIR)),
+    name="static"
+)
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -68,12 +84,15 @@ ACTIVITIES = {
 }
 
 
+def get_db_connection():
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+    return connection
+
+
 @app.get("/")
 def home():
-    return {
-        "message": "Welcome to Smart Travel Planner!",
-        "status": "Backend is running"
-    }
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 
 @app.get("/health")
@@ -84,7 +103,6 @@ def health_check():
 @app.post("/plan")
 def create_travel_plan(request: TravelRequest):
 
-    # Sanalarni tekshirish
     if request.end_date < request.start_date:
         raise HTTPException(
             status_code=400,
@@ -99,14 +117,11 @@ def create_travel_plan(request: TravelRequest):
             detail="For now, trips can be up to 30 days."
         )
 
-    # Sayohat uslubini tanlash
     style = request.travel_style.lower().strip()
     activities = ACTIVITIES.get(style, ACTIVITIES["culture"])
 
-    # Budjet hisoblash
     daily_budget = request.budget / duration / request.travelers
 
-    # Har bir kun uchun reja yaratish
     daily_itinerary = []
 
     for day_number in range(duration):
@@ -135,50 +150,41 @@ def create_travel_plan(request: TravelRequest):
         "travel_style": style,
         "daily_itinerary": daily_itinerary
     }
-import sqlite3
-from pathlib import Path
-
-
-DATABASE_PATH = Path(__file__).with_name("travel.db")
-
-
-def get_db_connection():
-    connection = sqlite3.connect(DATABASE_PATH)
-    connection.row_factory = sqlite3.Row
-    return connection
 
 
 @app.get("/cities")
 def get_cities():
     connection = get_db_connection()
 
-    cities = connection.execute("""
-        SELECT id, name, description
-        FROM cities
-        ORDER BY name
-    """).fetchall()
+    try:
+        cities = connection.execute("""
+            SELECT id, name, description
+            FROM cities
+            ORDER BY name
+        """).fetchall()
 
-    connection.close()
-
-    return [dict(city) for city in cities]
+        return [dict(city) for city in cities]
+    finally:
+        connection.close()
 
 
 @app.get("/attractions")
 def get_attractions(city: str):
     connection = get_db_connection()
 
-    attractions = connection.execute("""
-        SELECT attractions.id,
-               attractions.name,
-               attractions.category,
-               attractions.description,
-               cities.name AS city
-        FROM attractions
-        JOIN cities ON attractions.city_id = cities.id
-        WHERE cities.name = ?
-        ORDER BY attractions.name
-    """, (city,)).fetchall()
+    try:
+        attractions = connection.execute("""
+            SELECT attractions.id,
+                   attractions.name,
+                   attractions.category,
+                   attractions.description,
+                   cities.name AS city
+            FROM attractions
+            JOIN cities ON attractions.city_id = cities.id
+            WHERE cities.name = ?
+            ORDER BY attractions.name
+        """, (city,)).fetchall()
 
-    connection.close()
-
-    return [dict(place) for place in attractions]
+        return [dict(place) for place in attractions]
+    finally:
+        connection.close()
