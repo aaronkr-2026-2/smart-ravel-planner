@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Travel Planner</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f7fc;
+            color: #1e293b;
+        }
+
+        header {
+            background: linear-gradient(120deg, #102a43, #1677a8);
+            color: white;
+            padding: 25px 8%;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 35px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            color: #123b63;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            color: #64748b;
+            font-size: 17px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.07);
+        }
+
+        h2 {
+            color: #123b63;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 9px;
+            font-size: 15px;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1677d2;
+            box-shadow: 0 0 0 3px rgba(22,119,210,0.12);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 28px;
+            padding: 16px;
+            background: #1677d2;
+            color: white;
+            border: none;
+            border-radius: 9px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #105da8;
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: wait;
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .summary-card {
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .summary-card span {
+            display: block;
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .summary-card strong {
+            color: #123b63;
+            font-size: 21px;
+        }
+
+        .day-card {
+            background: #f8fafc;
+            border-left: 4px solid #1677d2;
+            padding: 18px;
+            margin-top: 14px;
+            border-radius: 8px;
+        }
+
+        .day-card h3 {
+            color: #123b63;
+            margin-bottom: 8px;
+        }
+
+        .day-card p {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        #error {
+            color: #dc2626;
+            margin-top: 18px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .container {
+                margin: 0 12px 35px;
+                padding: 22px;
+            }
+
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">✈ Smart Travel Planner</div>
+</header>
+
+<section class="hero">
+    <h1>Plan Your Next Adventure</h1>
+    <p>Create your travel plan and manage your budget easily.</p>
+</section>
+
+<main class="container">
+
+    <h2>Create Your Travel Plan</h2>
+    <p class="description">
+        Enter your travel details to generate your itinerary.
+    </p>
+
+    <form id="travelForm">
+
+        <label for="destination">Destination</label>
+        <input
+            type="text"
+            id="destination"
+            placeholder="e.g. Da Nang, Vietnam"
+            required
+        >
+
+        <label for="start_date">Start Date</label>
+        <input type="date" id="start_date" required>
+
+        <label for="end_date">End Date</label>
+        <input type="date" id="end_date" required>
+
+        <label for="budget">Total Budget (USD)</label>
+        <input type="number" id="budget" min="1" placeholder="500" required>
+
+        <label for="travelers">Number of Travelers</label>
+        <input type="number" id="travelers" min="1" value="1" required>
+
+        <label for="travel_style">Travel Style</label>
+        <select id="travel_style">
+            <option value="adventure">Adventure</option>
+            <option value="relaxation">Relaxation</option>
+            <option value="cultural">Cultural</option>
+            <option value="budget">Budget</option>
+            <option value="luxury">Luxury</option>
+        </select>
+
+        <button type="submit" id="submitButton">
+            Generate Travel Plan
+        </button>
+
+    </form>
+
+    <p id="error"></p>
+
+    <section id="result">
+        <h2>Your Travel Plan</h2>
+        <div id="summary" class="summary"></div>
+
+        <h2>Daily Itinerary</h2>
+        <div id="itinerary"></div>
+    </section>
+
+</main>
+
+<footer>
+    © 2026 Smart Travel Planner. All rights reserved.
+</footer>
+
+<script>
+    
+const form = document.getElementById("travelForm");
+
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const button = document.getElementById("submitButton");
+    const result = document.getElementById("result");
+    const error = document.getElementById("error");
+
+    error.textContent = "";
+    result.style.display = "none";
+
+    const travelData = {
+        destination: document.getElementById("destination").value.trim(),
+        start_date: document.getElementById("start_date").value,
+        end_date: document.getElementById("end_date").value,
+        budget: Number(document.getElementById("budget").value),
+        travelers: Number(document.getElementById("travelers").value),
+        travel_style: document.getElementById("travel_style").value
+    };
+
+    if (travelData.end_date <= travelData.start_date) {
+        error.textContent = "End date must be after start date.";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Generating...";
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/plan", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(travelData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Something went wrong. Please try again."
+            );
+        }
+
+        const summary = document.getElementById("summary");
+        const itinerary = document.getElementById("itinerary");
+
+        summary.replaceChildren();
+        itinerary.replaceChildren();
+
+        function addSummary(label, value) {
+            const card = document.createElement("div");
+            card.className = "summary-card";
+
+            const title = document.createElement("span");
+            title.textContent = label;
+
+            const content = document.createElement("strong");
+            content.textContent = value;
+
+            card.append(title, content);
+            summary.appendChild(card);
+        }
+
+        addSummary("Destination", data.destination);
+        addSummary("Duration", data.duration + " days");
+        addSummary("Travelers", data.travelers);
+        addSummary("Total Budget", "$" + data.total_budget);
+        addSummary(
+            "Daily Budget Per Person",
+            "$" + data.daily_budget_per_person
+        );
+        addSummary("Travel Style", data.travel_style);
+
+        data.daily_itinerary.forEach(function(item) {
+            const card = document.createElement("div");
+            card.className = "day-card";
+
+            const title = document.createElement("h3");
+            title.textContent = item.title;
+
+            const date = document.createElement("p");
+            date.textContent = "Date: " + item.date;
+
+            const description = document.createElement("p");
+            description.textContent = item.description;
+
+            card.append(title, date, description);
+
+            if (item.activities && item.activities.length > 0) {
+                const list = document.createElement("ul");
+                list.style.margin = "12px 0 0 20px";
+
+                item.activities.forEach(function(activity) {
+                    const listItem = document.createElement("li");
+                    listItem.textContent = activity;
+                    listItem.style.marginBottom = "6px";
+                    list.appendChild(listItem);
+                });
+
+                card.appendChild(list);
+            }
+
+            itinerary.appendChild(card);
+        });
+
+        result.style.display = "block";
+        result.scrollIntoView({ behavior: "smooth" });
+
+    } catch (err) {
+        error.textContent = "Error: " + err.message;
+    } finally {
+        button.disabled = false;
+        button.textContent = "Generate Travel Plan";
+    }
+});
+
+</script>
+
+</body>
+</html>
